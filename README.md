@@ -3,10 +3,10 @@
 # Tutorial de arquitetura hexagonal utilizando spring boot
 
 - Autor: Iratuã Júnior
-- Data: 07/11/2024
+- Data: 08/11/2024
 - Versão do springboot: 3.3.5
 - Versão jdk: 17
-- [Respositorio no github](https://github.com/iratuan/tutorial-clean-arch)
+- [Respositorio no github](git remote add origin https://github.com/iratuan/tutorial-sboot-hexaarch.git)
 
 ## Sobre o tutorial
 
