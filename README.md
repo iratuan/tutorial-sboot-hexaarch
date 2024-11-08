@@ -125,8 +125,8 @@ Organizaremos o projeto em pacotes para seguir a arquitetura hexagonal:
 
 ---
 
-### 3. **Criação da Entidade do Domínio `Produto`**
-### Classe `Produto`: Entidade de Domínio Independente de Frameworks
+### 3. **Criação da Entidade do Domínio e UseCase do domínio `Produto`**
+#### Classe `Produto`: Entidade de Domínio Independente de Frameworks
 
 A classe `Produto` representa a nossa entidade central no contexto de um sistema de e-commerce. Como estamos seguindo os princípios da **arquitetura hexagonal**, a entidade de domínio `Produto` é implementada na **camada de núcleo (core)** do projeto. Esse núcleo é independente de frameworks externos, o que permite que a lógica de negócios seja reutilizável e adaptável a diferentes tecnologias e implementações sem precisar modificar a própria lógica de domínio.
 
@@ -194,14 +194,14 @@ public class Produto {
 
 ```
 
-### Explicação dos Componentes da Classe
+#### Explicação dos Componentes da Classe
 
 - **Atributos (`id`, `nome`, `preco`)**: Definem as propriedades principais da entidade `Produto`, necessárias para identificar e descrever o produto.
 - **Construtor Padrão**: Necessário para o uso de frameworks e bibliotecas de serialização e desserialização.
 - **Construtor Completo**: Facilita a criação de uma instância `Produto` com valores pré-definidos para todos os atributos, promovendo praticidade no código.
 - **Getters e Setters**: Métodos de acesso que seguem o princípio de encapsulamento, permitindo acessar e modificar os valores dos atributos de forma controlada.
 
-### Resumo
+#### Resumo
 
 A classe `Produto` está configurada para ser uma entidade de domínio que permanece isolada de detalhes de implementação, como frameworks de persistência ou dependências externas. Esse design garante que a lógica de negócio permaneça coesa e flexível, sendo o primeiro passo para implementar o CRUD seguindo os princípios da arquitetura hexagonal.
 
@@ -209,7 +209,7 @@ A classe `Produto` está configurada para ser uma entidade de domínio que perma
 
 ### 4. **Criação das Interfaces de Portas**
 
-### ProdutoRepositoryPort
+#### ProdutoRepositoryPort
 
 A **interface `ProdutoRepositoryPort`** é uma das principais interfaces no design de uma aplicação que adota a **arquitetura hexagonal**. Ela define o **contrato** para as operações de persistência da entidade `Produto`, o que permite que a camada de domínio não dependa diretamente da implementação específica de um repositório.
 
@@ -225,10 +225,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProdutoRepositoryPort {
-  Produto save(Produto produto);
-  Optional<Produto> findById(Long id);
-  List<Produto> findAll();
-  void deleteById(Long id);
+    Produto save(Produto produto);
+    Optional<Produto> findById(Long id);
+    List<Produto> findAll();
+    void deleteById(Long id);
 }
 ```
 
@@ -239,7 +239,7 @@ public interface ProdutoRepositoryPort {
 - **`findAll()`**: Retorna todos os produtos disponíveis no repositório.
 - **`deleteById(Long id)`**: Remove um produto com o ID especificado.
 
-### ProdutoServicePort
+#### ProdutoServicePort
 
 A **interface `ProdutoServicePort`** é outro port importante na nossa arquitetura, servindo como um contrato que define os métodos de serviço que a camada de controle (controller) deve utilizar para interagir com a entidade `Produto`. Essa interface facilita o **desacoplamento** entre a camada de serviço e o controlador, tornando a aplicação mais flexível para modificações e implementações de novos serviços.
 
@@ -255,11 +255,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProdutoServicePort {
-  Produto criarProduto(Produto produto);
-  Optional<Produto> obterProdutoPorId(Long id);
-  List<Produto> listarProdutos();
-  Produto atualizarProduto(Produto produto);
-  void deletarProduto(Long id);
+    Produto criarProduto(Produto produto);
+    Optional<Produto> obterProdutoPorId(Long id);
+    List<Produto> listarProdutos();
+    Produto atualizarProduto(Produto produto);
+    void deletarProduto(Long id);
 }
 ```
 
@@ -271,7 +271,7 @@ public interface ProdutoServicePort {
 - **`atualizarProduto(Produto produto)`**: Atualiza os dados de um produto existente.
 - **`deletarProduto(Long id)`**: Exclui o produto com o ID fornecido.
 
-### Resumo
+#### Resumo
 
 As interfaces `ProdutoRepositoryPort` e `ProdutoServicePort` são fundamentais para a arquitetura hexagonal do projeto. Elas estabelecem contratos claros para a comunicação entre camadas, garantindo que a lógica de negócio permaneça independente dos detalhes de implementação da camada de persistência e do controlador. Com esses ports, conseguimos uma aplicação modular, flexível e mais fácil de manter, além de facilitar mudanças tecnológicas sem impacto no domínio da aplicação.
 
@@ -304,11 +304,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ProdutoEntity extends Produto {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  private String nome;
-  private BigDecimal preco;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nome;
+    private BigDecimal preco;
 }
 ```
 
@@ -318,7 +318,7 @@ public class ProdutoEntity extends Produto {
 - **Anotação `@Id` e `@GeneratedValue`**: Define `id` como a chave primária da entidade e configura a geração automática de valores para esse campo (estratégia `IDENTITY`).
 - **Herança de `Produto`**: `ProdutoEntity` herda os atributos de `Produto` para aproveitar a estrutura de domínio, mas ainda mantém suas anotações e lógica de mapeamento na própria classe para que a camada de domínio permaneça desacoplada.
 
-### Repositório JPA (`ProdutoJpaRepository`)
+#### Repositório JPA (`ProdutoJpaRepository`)
 
 Para realizar operações no banco de dados com o Spring Data JPA, criamos a interface `ProdutoJpaRepository`, que estende `JpaRepository` e herda os métodos padrão para operações CRUD. Ao estender `JpaRepository`, o Spring Data JPA gerencia as operações de persistência automaticamente.
 
@@ -327,6 +327,7 @@ Para realizar operações no banco de dados com o Spring Data JPA, criamos a int
 ```java
 package br.com.aygean.hexaarch.adapter.output.persistence.repository;
 
+
 import br.com.aygean.hexaarch.adapter.output.persistence.entity.ProdutoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -334,7 +335,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProdutoJpaRepository extends JpaRepository<ProdutoEntity, Long> {
 }
-
 ```
 
 #### Explicação do Código
@@ -342,7 +342,7 @@ public interface ProdutoJpaRepository extends JpaRepository<ProdutoEntity, Long>
 - **Extensão de `JpaRepository`**: `ProdutoJpaRepository` herda os métodos CRUD padrão, como `save`, `findById`, `findAll`, e `deleteById`, que permitem realizar operações no banco de dados sem a necessidade de implementação adicional.
 - **Anotação `@Repository`**: Indica que esta interface faz parte da camada de persistência, permitindo que o Spring a gerencie como um bean de repositório.
 
-### Implementação do Repositório (`ProdutoRepositoryImpl`)
+#### Implementação do Repositório (`ProdutoRepositoryImpl`)
 
 A classe `ProdutoRepositoryImpl` implementa a interface `ProdutoRepositoryPort`, que define as operações do repositório de domínio para `Produto`. Esta classe atua como um adaptador, utilizando o `ProdutoJpaRepository` para realizar as operações de persistência e o `ProdutoMapper` para converter entre `Produto` (domínio) e `ProdutoEntity` (persistência).
 
@@ -360,41 +360,74 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação de ProdutoRepositoryPort que utiliza ProdutoJpaRepository e ProdutoMapper
+ * para realizar operações de persistência, convertendo entre as entidades de domínio (Produto)
+ * e de persistência (ProdutoEntity).
+ */
 @Repository
 public class ProdutoRepositoryImpl implements ProdutoRepositoryPort {
 
-  private final ProdutoJpaRepository produtoJpaRepository;
-  private final ProdutoMapper produtoMapper;
+    private final ProdutoJpaRepository produtoJpaRepository;
+    private final ProdutoMapper produtoMapper;
 
-  public ProdutoRepositoryImpl(ProdutoJpaRepository produtoJpaRepository, ProdutoMapper produtoMapper) {
-    this.produtoJpaRepository = produtoJpaRepository;
-    this.produtoMapper = produtoMapper;
-  }
+    /**
+     * Construtor para injeção de dependências do repositório JPA e do mapeador de entidades.
+     *
+     * @param produtoJpaRepository Repositório JPA para operações de persistência.
+     * @param produtoMapper Mapper para conversão entre Produto e ProdutoEntity.
+     */
+    public ProdutoRepositoryImpl(ProdutoJpaRepository produtoJpaRepository, ProdutoMapper produtoMapper) {
+        this.produtoJpaRepository = produtoJpaRepository;
+        this.produtoMapper = produtoMapper;
+    }
 
-  @Override
-  public Produto save(Produto produto) {
-    var produtoEntity = produtoMapper.toEntity(produto);
-    var savedEntity = produtoJpaRepository.save(produtoEntity);
-    return produtoMapper.toDomain(savedEntity);
-  }
+    /**
+     * Salva um produto no repositório, convertendo-o para ProdutoEntity.
+     *
+     * @param produto Produto a ser salvo.
+     * @return Produto salvo após conversão de ProdutoEntity.
+     */
+    @Override
+    public Produto save(Produto produto) {
+        var produtoEntity = produtoMapper.toEntity(produto); // Converte Produto para ProdutoEntity
+        var savedEntity = produtoJpaRepository.save(produtoEntity); // Salva a entidade no repositório JPA
+        return produtoMapper.toDomain(savedEntity); // Converte a entidade salva de volta para Produto
+    }
 
-  @Override
-  public Optional<Produto> findById(Long id) {
-    return produtoJpaRepository.findById(id)
-            .map(produtoMapper::toDomain);
-  }
+    /**
+     * Busca um produto pelo ID, convertendo de ProdutoEntity para Produto.
+     *
+     * @param id ID do produto a ser encontrado.
+     * @return Optional contendo o Produto, caso encontrado, ou Optional vazio.
+     */
+    @Override
+    public Optional<Produto> findById(Long id) {
+        return produtoJpaRepository.findById(id)
+                .map(produtoMapper::toDomain); // Converte ProdutoEntity para Produto, se presente
+    }
 
-  @Override
-  public List<Produto> findAll() {
-    return produtoJpaRepository.findAll().stream()
-            .map(produtoMapper::toDomain)
-            .collect(Collectors.toList());
-  }
+    /**
+     * Recupera todos os produtos do repositório, convertendo cada ProdutoEntity para Produto.
+     *
+     * @return Lista de todos os produtos no repositório.
+     */
+    @Override
+    public List<Produto> findAll() {
+        return produtoJpaRepository.findAll().stream() // Busca todos os ProdutoEntity
+                .map(produtoMapper::toDomain) // Converte cada ProdutoEntity para Produto
+                .collect(Collectors.toList());
+    }
 
-  @Override
-  public void deleteById(Long id) {
-    produtoJpaRepository.deleteById(id);
-  }
+    /**
+     * Exclui um produto do repositório pelo ID.
+     *
+     * @param id ID do produto a ser excluído.
+     */
+    @Override
+    public void deleteById(Long id) {
+        produtoJpaRepository.deleteById(id); // Exclui o ProdutoEntity pelo ID
+    }
 }
 
 ```
@@ -409,7 +442,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepositoryPort {
   - O método `findAll` converte a lista de `ProdutoEntity` em `Produto`, usando o `ProdutoMapper` para cada item e retornando a lista como uma coleção de `Produto`.
 - **Desacoplamento**: `ProdutoRepositoryImpl` atua como um adaptador que traduz as operações de persistência para o domínio, mantendo o código de domínio desacoplado das implementações de infraestrutura.
 
-### Resumo
+#### Resumo
 
 - **`ProdutoEntity`**: Representa a entidade de persistência configurada com anotações JPA para mapeamento com o banco de dados.
 - **`ProdutoJpaRepository`**: Interface que estende `JpaRepository` para obter métodos CRUD básicos do Spring Data JPA.
@@ -444,13 +477,13 @@ import br.com.aygean.hexaarch.core.domain.Produto;
 
 public class ProdutoMapper {
 
-  public static ProdutoEntity toEntity(Produto produto) {
-    return new ProdutoEntity(produto.getId(), produto.getNome(), produto.getPreco());
-  }
+    public static ProdutoEntity toEntity(Produto produto) {
+        return new ProdutoEntity(produto.getId(), produto.getNome(), produto.getPreco());
+    }
 
-  public Produto toDomain(ProdutoEntity produtoEntity) {
-    return new Produto(produtoEntity.getId(), produtoEntity.getNome(), produtoEntity.getPreco());
-  }
+    public Produto toDomain(ProdutoEntity produtoEntity) {
+        return new Produto(produtoEntity.getId(), produtoEntity.getNome(), produtoEntity.getPreco());
+    }
 }
 ```
 
@@ -492,46 +525,46 @@ import java.util.Optional;
 @Service
 public class ProdutoService {
 
-  private final ProdutoRepositoryPort produtoRepository;
+    private final ProdutoRepositoryPort produtoRepository;
 
-  // Injeta a dependência ProdutoRepositoryPort, permitindo o uso do repositório para operações de persistência
-  public ProdutoService(ProdutoRepositoryPort produtoRepository) {
-    this.produtoRepository = produtoRepository;
-  }
+    // Injeta a dependência ProdutoRepositoryPort, permitindo o uso do repositório para operações de persistência
+    public ProdutoService(ProdutoRepositoryPort produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    }
 
-  // Método para criar um novo produto, salva o produto no repositório
-  public Produto criarProduto(Produto produto) {
-    // Aqui poderiam ser feitas validações ou cálculos de negócios antes de salvar o produto
-    return produtoRepository.save(produto);
-  }
+    // Método para criar um novo produto, salva o produto no repositório
+    public Produto criarProduto(Produto produto) {
+        // Aqui poderiam ser feitas validações ou cálculos de negócios antes de salvar o produto
+        return produtoRepository.save(produto);
+    }
 
-  // Método para obter um produto pelo seu ID
-  public Optional<Produto> obterProdutoPorId(Long id) {
-    // Verifica no repositório se o produto existe com o ID fornecido
-    return produtoRepository.findById(id);
-  }
+    // Método para obter um produto pelo seu ID
+    public Optional<Produto> obterProdutoPorId(Long id) {
+        // Verifica no repositório se o produto existe com o ID fornecido
+        return produtoRepository.findById(id);
+    }
 
-  // Método para listar todos os produtos
-  public List<Produto> listarProdutos() {
-    // Retorna todos os produtos no repositório
-    return produtoRepository.findAll();
-  }
+    // Método para listar todos os produtos
+    public List<Produto> listarProdutos() {
+        // Retorna todos os produtos no repositório
+        return produtoRepository.findAll();
+    }
 
-  // Método para atualizar um produto existente
-  public Produto atualizarProduto(Produto produto) {
-    // Aqui poderiam ser feitas verificações, como se o produto existe antes de atualizar
-    return produtoRepository.save(produto);
-  }
+    // Método para atualizar um produto existente
+    public Produto atualizarProduto(Produto produto) {
+        // Aqui poderiam ser feitas verificações, como se o produto existe antes de atualizar
+        return produtoRepository.save(produto);
+    }
 
-  // Método para deletar um produto pelo seu ID
-  public void deletarProduto(Long id) {
-    // Remove o produto do repositório com base no ID
-    produtoRepository.deleteById(id);
-  }
+    // Método para deletar um produto pelo seu ID
+    public void deletarProduto(Long id) {
+        // Remove o produto do repositório com base no ID
+        produtoRepository.deleteById(id);
+    }
 }
 ```
 
-### Explicação dos Métodos
+#### Explicação dos Métodos
 
 1. **Método `criarProduto`**:
   - Recebe um objeto `Produto` e usa o `produtoRepository` para salvar o produto no banco de dados.
@@ -555,7 +588,7 @@ public class ProdutoService {
   - Recebe o ID de um produto e usa o repositório para deletá-lo do banco de dados.
   - Centralizar a lógica de exclusão permite uma eventual adição de verificações, como impedir a exclusão de produtos em pedidos ativos.
 
-### Centralização da Lógica de Negócio
+#### Centralização da Lógica de Negócio
 
 A classe `ProdutoService` centraliza toda a lógica de negócios referente a produtos. Isso é fundamental para garantir que a camada de aplicação (como controladores) permaneça simples e se concentre apenas em receber e retornar dados. Esse isolamento da lógica de negócios torna o sistema:
 
@@ -563,7 +596,7 @@ A classe `ProdutoService` centraliza toda a lógica de negócios referente a pro
 - **Fácil de modificar e testar**: Alterações e testes de lógica de negócio podem ser feitos na camada de serviço, sem impacto direto nas demais camadas.
 - **Flexível e extensível**: Como o `ProdutoService` se comunica apenas com a `ProdutoRepositoryPort`, ele é independente de detalhes de implementação do repositório, facilitando futuras substituições ou mudanças.
 
-### Resumo
+#### Resumo
 
 A classe `ProdutoService` é um componente essencial da nossa aplicação, onde toda a lógica de manipulação de produtos é implementada. Utilizando o `ProdutoRepositoryPort`, ela mantém o sistema flexível e desacoplado, alinhado aos princípios da arquitetura hexagonal, e facilita a manutenção e expansão do projeto.
 ---
@@ -574,7 +607,7 @@ Na arquitetura hexagonal, a configuração explícita de **beans** permite maior
 
 No nosso projeto, `AppConfig` é utilizado para **configurar os beans do serviço** (`ProdutoService`), do **repositório** (`ProdutoRepositoryPort`), e do **mapeador** (`ProdutoMapper`), essencial para converter entre as representações de domínio e persistência.
 
-### Código de `AppConfig` com Explicação
+#### Código de `AppConfig` com Explicação
 
 ```java
 package br.com.aygean.hexaarch.config;
@@ -619,7 +652,7 @@ public class AppConfig {
 }
 ```
 
-### Explicação dos Beans Configurados
+#### Explicação dos Beans Configurados
 
 1. **Bean `produtoService`**:
   - O `ProdutoService` é a classe de serviço principal que gerencia as operações de negócio para a entidade `Produto`.
@@ -657,7 +690,7 @@ public class AppConfig {
    }
    ```
 
-### Importância de `AppConfig` para o Projeto
+#### Importância de `AppConfig` para o Projeto
 
 A classe `AppConfig` é essencial para a **configuração centralizada** de dependências, permitindo que a aplicação Spring Boot mantenha um **baixo acoplamento** entre as camadas. Essa abordagem oferece as seguintes vantagens:
 
@@ -817,10 +850,32 @@ Aqui está uma lista simples explicando cada método no `ProdutoController`:
 
 Cada método usa `ResponseEntity` para encapsular a resposta, o que permite controlar o código de status HTTP retornado.
 
-### Como o `ProdutoController` Utiliza o `ProdutoServicePort`
+#### Como o `ProdutoController` Utiliza o `ProdutoServicePort`
 
 O `ProdutoController` interage com a camada de serviço (definida por `ProdutoServicePort`), que oferece uma **interface de comunicação** com os métodos de negócio da aplicação. Utilizar `ProdutoServicePort` em vez de diretamente uma implementação específica facilita o **desacoplamento** e permite **testes mais eficientes**, pois podemos substituir a implementação real por mocks ou stubs quando necessário. 
 
+#### DTOs no formato Requests e Responses
+
+O controller faz uso de DTOs para entradas e saídas de dados. Dessa forma, iremos criar dois `record` para representação dos dados.
+
+```java
+package br.com.aygean.hexaarch.adapter.input.dto;
+
+import java.math.BigDecimal;
+
+public record ProdutoRequest(String nome, BigDecimal preco) {
+}
+```
+e
+```java
+package br.com.aygean.hexaarch.adapter.input.dto;
+
+import java.math.BigDecimal;
+
+public record ProdutoResponse(Long id, String nome, BigDecimal preco) {
+}
+
+```
 
 
 Iremos incluir também o ControllerAdvice, que tem a função de tratar as exceptions do projeto.
