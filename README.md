@@ -123,6 +123,7 @@ Organizaremos o projeto em pacotes para seguir a arquitetura hexagonal:
 | **adapter.output.repository**| Implementa as interfaces de saída que se comunicam com o banco de dados, realizando operações de CRUD.                                |
 | **config**                   | Contém classes de configuração da aplicação, como banco de dados, ajudando a manter o código organizado e centralizado.               |
 
+![Arquitetura Limpa](/images/f02_img.png "img")
 ---
 
 ### 3. **Criação da Entidade do Domínio e UseCase do domínio `Produto`**
