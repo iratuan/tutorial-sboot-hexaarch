@@ -1126,7 +1126,7 @@ A arquitetura hexagonal é uma escolha valiosa para sistemas que precisam ser ma
 
 ---
 
-### Passo 5: Configurando o Docker e Application Properties
+### Configurando o Docker e Application Properties
 
 1. **Docker Compose**: Configure o arquivo `docker-compose.yml` para iniciar o PostgreSQL.
 
@@ -1169,7 +1169,7 @@ spring.jpa.properties.hibernate.format_sql=true
 # Configuração para gerenciamento de schema (opcional)
 spring.jpa.hibernate.ddl-auto=create
 ```
-### Acessando o container postgres
+#### Acessando o container postgres
 
 ````text
 docker ps  # Lista os containers em execução
@@ -1181,3 +1181,105 @@ exit  # Sai do container
 ````
 
 > Não esqueça de substituir pelo nome do seu banco de dados
+
+### Diagrama UML simplificado
+
+```plaintext
+                                   +-------------------------------+
+                                   |        ProdutoController      |
+                                   |-------------------------------|
+                                   | + criarProduto(request):      |
+                                   |    ResponseEntity<ProdutoRes> |
+                                   | + obterProduto(id):           |
+                                   |    ResponseEntity<ProdutoRes> |
+                                   | + listarProdutos():           |
+                                   |    ResponseEntity<List<...>>  |
+                                   | + atualizarProduto(id, req):  |
+                                   |    ResponseEntity<ProdutoRes> |
+                                   | + deletarProduto(id):         |
+                                   |    ResponseEntity<Void>       |
+                                   +-------------------------------+
+                                               |
+                                               v
+                                   +----------------------------+
+                                   |      ProdutoService        |
+                                   |----------------------------|
+                                   | + criarProduto(produto):   |
+                                   |   Produto                  |
+                                   | + obterProdutoPorId(id):   |
+                                   |   Optional<Produto>        |
+                                   | + listarProdutos():        |
+                                   |   List<Produto>            |
+                                   | + atualizarProduto(prod):  |
+                                   |   Produto                  |
+                                   | + deletarProduto(id):      |
+                                   |   void                     |
+                                   +----------------------------+
+                                               |
+                                               v
+                               +----------------------------------+
+                               |      ProdutoRepositoryPort       |
+                               |----------------------------------|
+                               | <<interface>>                    |
+                               | + save(produto): Produto         |
+                               | + findById(id): Optional<Produto>|
+                               | + findAll(): List<Produto>       |
+                               | + deleteById(id): void           |
+                               +----------------------------------+
+                                               |
+                                               v
+                               +--------------------------------------+
+                               |        ProdutoRepositoryImpl         |
+                               |--------------------------------------|
+                               | + produtoJpaRepository: JpaRepo<>    |
+                               | + produtoMapper: ProdutoMapper       |
+                               |--------------------------------------|
+                               | + save(produto): Produto             |
+                               | + findById(id): Optional<Produto>    |
+                               | + findAll(): List<Produto>           |
+                               | + deleteById(id): void               |
+                               +--------------------------------------+
+                                               |
+                                               v
+                               +--------------------------------------+
+                               |      ProdutoJpaRepository            |
+                               |--------------------------------------|
+                               | <<interface>> extends JpaRepository  |
+                               +--------------------------------------+
+
+                                                ^
+                                                |
+                              +-----------------+-----------------+
+                              |                                   |
+              +---------------------------+            +--------------------------+
+              |       ProdutoMapper       |            |      ProdutoEntity       |
+              |---------------------------|            |--------------------------|
+              | + toEntity(produto):      |            | + id: Long               |
+              |   ProdutoEntity           |            | + nome: String           |
+              | + toDomain(entity):       |            | + preco: BigDecimal      |
+              |   Produto                 |            +--------------------------+
+              +---------------------------+            | + getters and setters    |
+                                                       +--------------------------+
+```
+
+#### Explicação da Estrutura
+
+1. **Camada de Apresentação**:
+    - **ProdutoController**: Classe de controle da camada REST que expõe os endpoints para manipular `Produto`. Cada método (como `criarProduto` e `listarProdutos`) utiliza `ProdutoService` para operações de negócio.
+
+2. **Camada de Serviço (Core)**:
+    - **ProdutoService**: Centraliza a lógica de negócio, chamando a interface `ProdutoRepositoryPort` para persistir dados. Define métodos como `criarProduto`, `obterProdutoPorId`, `listarProdutos`, entre outros.
+
+3. **Camada de Portas e Adaptadores**:
+    - **ProdutoRepositoryPort**: Interface que define as operações de persistência para `Produto`, sendo implementada pela `ProdutoRepositoryImpl`.
+    - **ProdutoRepositoryImpl**: Implementação de `ProdutoRepositoryPort` que utiliza `ProdutoJpaRepository` e `ProdutoMapper` para interagir com a camada de persistência.
+
+4. **Camada de Persistência**:
+    - **ProdutoJpaRepository**: Interface que estende `JpaRepository`, fornecendo métodos CRUD nativos para `ProdutoEntity`.
+    - **ProdutoMapper**: Classe que converte entre `Produto` (domínio) e `ProdutoEntity` (persistência), mantendo a separação das camadas.
+    - **ProdutoEntity**: Classe que representa a entidade `Produto` no banco de dados, mapeada com anotações JPA.
+
+### Conexões
+
+- As setas indicam a direção das dependências, com o controlador chamando o serviço, o serviço chamando a porta de repositório, e assim por diante.
+
