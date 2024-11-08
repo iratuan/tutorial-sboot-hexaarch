@@ -1283,3 +1283,5 @@ exit  # Sai do container
 
 - As setas indicam a direção das dependências, com o controlador chamando o serviço, o serviço chamando a porta de repositório, e assim por diante.
 
+
+**Atenciosamente `IratuaN Júnior`**.
