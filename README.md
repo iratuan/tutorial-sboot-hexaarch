@@ -8,29 +8,12 @@
 - Versão jdk: 17
 - [Respositorio no github](git remote add origin https://github.com/iratuan/tutorial-sboot-hexaarch.git)
 
-## Sobre o tutorial
-Neste tutorial, vamos construir uma **API RESTful** em **Spring Boot** com uma arquitetura hexagonal para gerenciar um CRUD simples de um **Produto**. Esse Produto representará o item de um comércio eletrônico, persistindo os dados em um banco de dados PostgreSQL.
-
-
-### Passo 1: Entendendo a Arquitetura Hexagonal
-
-
-
-### Passo 2: Estrutura do Projeto
-
-
-### Passo 3: Configurando o Projeto
-
-
-
-Aqui está uma ordem sugerida para desenvolver um tutorial passo a passo sobre o projeto de arquitetura hexagonal, abordando cada camada e recurso de forma organizada e clara.
-
----
+## Introdução
 
 ### 1. **Introdução ao Projeto e Arquitetura Hexagonal**
 A **arquitetura hexagonal**, também conhecida como **Portas e Adaptadores**, é um estilo arquitetural que facilita a separação de responsabilidades e promove um alto nível de desacoplamento entre as camadas de um sistema. Concebida por **Alistair Cockburn**, essa abordagem visa manter a lógica de negócios independente de detalhes técnicos, como frameworks, bancos de dados, ou APIs externas, permitindo que a aplicação seja adaptável e extensível.
 
-### Estrutura e Propósito
+### Propósito
 
 A arquitetura hexagonal organiza o sistema em duas principais divisões: o **núcleo da aplicação** e o **mundo externo**. No centro, temos a lógica de negócios, enquanto o mundo externo é composto por **adaptadores** que conectam a aplicação ao banco de dados, APIs, interfaces de usuário, entre outros.
 
